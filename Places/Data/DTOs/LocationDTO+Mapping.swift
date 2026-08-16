@@ -12,7 +12,7 @@ extension LocationDTO {
         let coordinate = Coordinate(latitude: lat, longitude: long)
         let trimmedName = name?.trimmingCharacters(in: .whitespacesAndNewlines)
         return Location(
-            id: "\(lat),\(long)",
+            id: UUID().uuidString,
             name: (trimmedName?.isEmpty == false) ? trimmedName : nil,
             coordinate: coordinate
         )

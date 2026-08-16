@@ -17,8 +17,8 @@ struct WikipediaDeepLinkBuilder: WikipediaLinkBuilder {
         components.scheme = "wikipedia"
         components.host = "places"
         components.queryItems = [
-            URLQueryItem(name: "lat", value: String(coordinate.latitude)),
-            URLQueryItem(name: "lon", value: String(coordinate.longitude)),
+            URLQueryItem(name: "lat", value: String(format: "%.6f", coordinate.latitude)),
+            URLQueryItem(name: "lon", value: String(format: "%.6f", coordinate.longitude)),
         ]
         return components.url
     }

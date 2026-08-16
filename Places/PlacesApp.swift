@@ -13,7 +13,7 @@ struct PlacesApp: App {
 
     var body: some Scene {
         WindowGroup {
-            PlacesListView(dependencies: dependencies)
+            PlacesCoordinatorView(dependencies: dependencies)
         }
     }
 }

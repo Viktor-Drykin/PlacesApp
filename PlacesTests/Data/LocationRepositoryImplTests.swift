@@ -23,6 +23,7 @@ private struct FakeLocationsService: LocationsServiceProtocol {
     }
 }
 
+@MainActor
 struct LocationRepositoryTests {
     private let amsterdam = Location(id: UUID().uuidString, name: "Amsterdam", coordinate: Coordinate(latitude: 52.3547498, longitude: 4.8339215))
     private let kyoto = Location(id: UUID().uuidString, name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))

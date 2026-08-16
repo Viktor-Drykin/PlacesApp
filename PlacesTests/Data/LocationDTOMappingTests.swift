@@ -27,7 +27,7 @@ struct LocationDTOMappingTests {
         #expect(location.name == nil)
     }
 
-    @Test func decodesResponseFromJSON() throws {
+    @MainActor @Test func decodesResponseFromJSON() throws {
         let json = """
         { "locations": [
             { "name": "Amsterdam", "lat": 52.3547498, "long": 4.8339215 },

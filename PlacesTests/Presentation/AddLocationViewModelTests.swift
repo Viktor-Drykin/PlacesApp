@@ -11,7 +11,7 @@ struct AddLocationViewModelTests {
     private let localization = AddLocationLocalizationProvider()
 
     @Test func invalidLatitudeSetsValidationError() {
-        let sut = AddLocationViewModel()
+        let sut = AddLocationViewModel(localization: localization)
         sut.props.latitudeText = "200"
         sut.props.longitudeText = "10"
 
@@ -22,7 +22,7 @@ struct AddLocationViewModelTests {
     }
 
     @Test func invalidLongitudeSetsValidationError() {
-        let sut = AddLocationViewModel()
+        let sut = AddLocationViewModel(localization: localization)
         sut.props.latitudeText = "10"
         sut.props.longitudeText = "200"
 
@@ -33,7 +33,7 @@ struct AddLocationViewModelTests {
     }
 
     @Test func validSubmissionCreatesLocationWithGivenName() {
-        let sut = AddLocationViewModel()
+        let sut = AddLocationViewModel(localization: localization)
         sut.props.name = "Kyoto Station"
         sut.props.latitudeText = "34.9859"
         sut.props.longitudeText = "135.7585"
@@ -46,7 +46,7 @@ struct AddLocationViewModelTests {
     }
 
     @Test func blankNameProducesNilName() {
-        let sut = AddLocationViewModel()
+        let sut = AddLocationViewModel(localization: localization)
         sut.props.latitudeText = "52.3676"
         sut.props.longitudeText = "4.9041"
 
@@ -56,7 +56,7 @@ struct AddLocationViewModelTests {
     }
 
     @Test func resetClearsFieldsAndErrors() {
-        let sut = AddLocationViewModel()
+        let sut = AddLocationViewModel(localization: localization)
         sut.props.name = "Kyoto Station"
         sut.props.latitudeText = "200"
         sut.props.longitudeText = "10"

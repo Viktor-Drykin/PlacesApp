@@ -1,8 +1,9 @@
 //
-//  LocationRepositoryImplTests.swift
+//  LocationRepositoryTests.swift
 //  PlacesTests
 //
 
+import Foundation
 import Testing
 @testable import Places
 
@@ -22,12 +23,12 @@ private struct FakeLocationsService: LocationsServiceProtocol {
     }
 }
 
-struct LocationRepositoryImplTests {
-    private let amsterdam = Location(name: "Amsterdam", coordinate: Coordinate(latitude: 52.3547498, longitude: 4.8339215))
-    private let kyoto = Location(name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
+struct LocationRepositoryTests {
+    private let amsterdam = Location(id: UUID().uuidString, name: "Amsterdam", coordinate: Coordinate(latitude: 52.3547498, longitude: 4.8339215))
+    private let kyoto = Location(id: UUID().uuidString, name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
 
     @Test func fetchLocationsStoresAndReturnsTheList() async throws {
-        let repository = LocationRepositoryImpl(locationsService: FakeLocationsService(behavior: .success([amsterdam])))
+        let repository = LocationRepository(locationsService: FakeLocationsService(behavior: .success([amsterdam])))
 
         let locations = try await repository.fetchLocations()
 
@@ -35,7 +36,7 @@ struct LocationRepositoryImplTests {
     }
 
     @Test func fetchLocationsPropagatesFailure() async {
-        let repository = LocationRepositoryImpl(locationsService: FakeLocationsService(behavior: .failure(LocationsError.network)))
+        let repository = LocationRepository(locationsService: FakeLocationsService(behavior: .failure(LocationsError.network)))
 
         await #expect(throws: LocationsError.network) {
             _ = try await repository.fetchLocations()
@@ -43,7 +44,7 @@ struct LocationRepositoryImplTests {
     }
 
     @Test func addLocationAppendsToAnEmptyStore() async {
-        let repository = LocationRepositoryImpl(locationsService: FakeLocationsService(behavior: .success([])))
+        let repository = LocationRepository(locationsService: FakeLocationsService(behavior: .success([])))
 
         let locations = await repository.addLocation(kyoto)
 
@@ -51,7 +52,7 @@ struct LocationRepositoryImplTests {
     }
 
     @Test func addLocationAppendsAfterAFetch() async throws {
-        let repository = LocationRepositoryImpl(locationsService: FakeLocationsService(behavior: .success([amsterdam])))
+        let repository = LocationRepository(locationsService: FakeLocationsService(behavior: .success([amsterdam])))
         _ = try await repository.fetchLocations()
 
         let locations = await repository.addLocation(kyoto)
@@ -60,7 +61,7 @@ struct LocationRepositoryImplTests {
     }
 
     @Test func multipleAddedLocationsAccumulate() async {
-        let repository = LocationRepositoryImpl(locationsService: FakeLocationsService(behavior: .success([])))
+        let repository = LocationRepository(locationsService: FakeLocationsService(behavior: .success([])))
 
         _ = await repository.addLocation(amsterdam)
         let locations = await repository.addLocation(kyoto)

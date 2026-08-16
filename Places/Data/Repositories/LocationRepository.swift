@@ -1,5 +1,5 @@
 //
-//  LocationRepositoryImpl.swift
+//  LocationRepository.swift
 //  Places
 //
 
@@ -7,7 +7,7 @@
 /// and keeps it in memory, so that locations added by the user live
 /// alongside the ones fetched remotely. An actor so concurrent
 /// fetch/add calls mutate `storedLocations` safely.
-actor LocationRepositoryImpl: LocationsRepository {
+actor LocationRepository: LocationsRepositoryProtocol {
     private let locationsService: LocationsServiceProtocol
     private var storedLocations: [Location] = []
 

@@ -7,21 +7,59 @@
 /// `AddLocationViewModel`. The view binds only to this single entity — it
 /// never touches the view model's individual pieces of state or the
 /// localization provider directly.
+///
+/// A custom initializer (rather than the synthesized memberwise one) so the
+/// optional fields don't silently default to `nil` — every caller passes
+/// every value explicitly.
 struct AddLocationViewProps: Equatable {
-    var sheetTitle: String = ""
-    var closeAccessibilityLabel: String = ""
-    var nameFieldLabel: String = ""
-    var nameFieldPlaceholder: String = ""
-    var latitudeFieldLabel: String = ""
-    var latitudeFieldPlaceholder: String = ""
-    var longitudeFieldLabel: String = ""
-    var longitudeFieldPlaceholder: String = ""
-    var submitButtonTitle: String = ""
+    var sheetTitle: String
+    var closeAccessibilityLabel: String
+    var nameFieldLabel: String
+    var nameFieldPlaceholder: String
+    var latitudeFieldLabel: String
+    var latitudeFieldPlaceholder: String
+    var longitudeFieldLabel: String
+    var longitudeFieldPlaceholder: String
+    var submitButtonTitle: String
 
-    var name: String = ""
-    var latitudeText: String = ""
-    var longitudeText: String = ""
+    var name: String
+    var latitudeText: String
+    var longitudeText: String
     var validationErrorMessage: String?
     var validationErrorAccessibilityLabel: String?
     var createdLocation: Location?
+
+    init(
+        sheetTitle: String,
+        closeAccessibilityLabel: String,
+        nameFieldLabel: String,
+        nameFieldPlaceholder: String,
+        latitudeFieldLabel: String,
+        latitudeFieldPlaceholder: String,
+        longitudeFieldLabel: String,
+        longitudeFieldPlaceholder: String,
+        submitButtonTitle: String,
+        name: String,
+        latitudeText: String,
+        longitudeText: String,
+        validationErrorMessage: String?,
+        validationErrorAccessibilityLabel: String?,
+        createdLocation: Location?
+    ) {
+        self.sheetTitle = sheetTitle
+        self.closeAccessibilityLabel = closeAccessibilityLabel
+        self.nameFieldLabel = nameFieldLabel
+        self.nameFieldPlaceholder = nameFieldPlaceholder
+        self.latitudeFieldLabel = latitudeFieldLabel
+        self.latitudeFieldPlaceholder = latitudeFieldPlaceholder
+        self.longitudeFieldLabel = longitudeFieldLabel
+        self.longitudeFieldPlaceholder = longitudeFieldPlaceholder
+        self.submitButtonTitle = submitButtonTitle
+        self.name = name
+        self.latitudeText = latitudeText
+        self.longitudeText = longitudeText
+        self.validationErrorMessage = validationErrorMessage
+        self.validationErrorAccessibilityLabel = validationErrorAccessibilityLabel
+        self.createdLocation = createdLocation
+    }
 }

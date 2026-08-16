@@ -28,7 +28,7 @@ struct LocationsServiceTests {
         let json = """
         { "locations": [ { "name": "Amsterdam", "lat": 52.3547498, "long": 4.8339215 } ] }
         """.data(using: .utf8)!
-        let service = LocationsService(networkService: FakeNetworkService(behavior: .success(json)))
+        let service = LocationsService(networkService: FakeNetworkService(behavior: .success(json)), decoder: JSONDecoder())
 
         let locations = try await service.fetchLocations()
 
@@ -37,7 +37,7 @@ struct LocationsServiceTests {
     }
 
     @Test func propagatesNetworkErrors() async {
-        let service = LocationsService(networkService: FakeNetworkService(behavior: .failure(LocationsError.network)))
+        let service = LocationsService(networkService: FakeNetworkService(behavior: .failure(LocationsError.network)), decoder: JSONDecoder())
 
         await #expect(throws: LocationsError.network) {
             _ = try await service.fetchLocations()
@@ -46,7 +46,7 @@ struct LocationsServiceTests {
 
     @Test func translatesMalformedJSONToDecodingError() async {
         let malformed = "{ not json ".data(using: .utf8)!
-        let service = LocationsService(networkService: FakeNetworkService(behavior: .success(malformed)))
+        let service = LocationsService(networkService: FakeNetworkService(behavior: .success(malformed)), decoder: JSONDecoder())
 
         await #expect(throws: LocationsError.decoding) {
             _ = try await service.fetchLocations()

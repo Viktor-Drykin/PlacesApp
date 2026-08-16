@@ -37,7 +37,7 @@ private extension View {
 
 struct LoadingSkeletonList: View {
     let accessibilityLabel: String
-    var rowCount: Int = 5
+    var rowCount: Int
 
     var body: some View {
         VStack(spacing: 0) {

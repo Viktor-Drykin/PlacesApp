@@ -9,8 +9,8 @@ import Testing
 
 /// Mirrors production wiring: both use cases in the SUT wrap this single
 /// fake repository, so tests exercise the same shared-state behavior as
-/// `LocationRepositoryImpl` does in the app.
-private final class FakeLocationsRepository: LocationsRepository, @unchecked Sendable {
+/// `LocationRepository` does in the app.
+private final class FakeLocationsRepository: LocationsRepositoryProtocol, @unchecked Sendable {
     enum FetchBehavior {
         case success([Location])
         case failure(Error)
@@ -54,23 +54,24 @@ private final class FakeExternalAppOpener: ExternalAppOpener, @unchecked Sendabl
 
 @MainActor
 struct PlacesListViewModelTests {
-    private let amsterdam = Location(name: "Amsterdam", coordinate: Coordinate(latitude: 52.3547498, longitude: 4.8339215))
+    private let amsterdam = Location(id: UUID().uuidString, name: "Amsterdam", coordinate: Coordinate(latitude: 52.3547498, longitude: 4.8339215))
 
     private func makeSUT(
         fetchBehavior: FakeLocationsRepository.FetchBehavior,
-        appOpener: FakeExternalAppOpener = FakeExternalAppOpener()
+        appOpener: FakeExternalAppOpener
     ) -> PlacesListViewModel {
         let repository = FakeLocationsRepository(fetchBehavior: fetchBehavior)
         let opener = WikipediaOpener(linkBuilder: WikipediaDeepLinkBuilder(), appOpener: appOpener)
         return PlacesListViewModel(
             fetchLocationsUseCase: DefaultFetchLocationsUseCase(repository: repository),
             addLocationUseCase: DefaultAddLocationUseCase(repository: repository),
-            wikipediaOpener: opener
+            wikipediaOpener: opener,
+            localization: PlacesListLocalizationProvider()
         )
     }
 
     @Test func onAppearTransitionsToLoadedOnSuccess() async {
-        let sut = makeSUT(fetchBehavior: .success([amsterdam]))
+        let sut = makeSUT(fetchBehavior: .success([amsterdam]), appOpener: FakeExternalAppOpener())
         await sut.performAction(.onAppear)
 
         guard case .loaded(let rows) = sut.props.loadState else {
@@ -82,13 +83,13 @@ struct PlacesListViewModelTests {
     }
 
     @Test func onAppearTransitionsToEmptyWhenNoLocations() async {
-        let sut = makeSUT(fetchBehavior: .success([]))
+        let sut = makeSUT(fetchBehavior: .success([]), appOpener: FakeExternalAppOpener())
         await sut.performAction(.onAppear)
         #expect(sut.props.loadState == .empty)
     }
 
     @Test func onAppearTransitionsToErrorOnFailure() async {
-        let sut = makeSUT(fetchBehavior: .failure(LocationsError.network))
+        let sut = makeSUT(fetchBehavior: .failure(LocationsError.network), appOpener: FakeExternalAppOpener())
         await sut.performAction(.onAppear)
 
         guard case .error = sut.props.loadState else {
@@ -120,10 +121,10 @@ struct PlacesListViewModelTests {
     }
 
     @Test func addLocationAppendsToLoadedList() async {
-        let sut = makeSUT(fetchBehavior: .success([amsterdam]))
+        let sut = makeSUT(fetchBehavior: .success([amsterdam]), appOpener: FakeExternalAppOpener())
         await sut.performAction(.onAppear)
 
-        let kyoto = Location(name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
+        let kyoto = Location(id: UUID().uuidString, name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
         await sut.performAction(.addLocation(kyoto))
 
         guard case .loaded(let rows) = sut.props.loadState else {
@@ -134,11 +135,11 @@ struct PlacesListViewModelTests {
     }
 
     @Test func addLocationReplacesEmptyState() async {
-        let sut = makeSUT(fetchBehavior: .success([]))
+        let sut = makeSUT(fetchBehavior: .success([]), appOpener: FakeExternalAppOpener())
         await sut.performAction(.onAppear)
         #expect(sut.props.loadState == .empty)
 
-        let kyoto = Location(name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
+        let kyoto = Location(id: UUID().uuidString, name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
         await sut.performAction(.addLocation(kyoto))
 
         guard case .loaded(let rows) = sut.props.loadState else {
@@ -149,9 +150,9 @@ struct PlacesListViewModelTests {
     }
 
     @Test func addLocationBeforeAnyFetchStillAccumulates() async {
-        let sut = makeSUT(fetchBehavior: .success([amsterdam]))
+        let sut = makeSUT(fetchBehavior: .success([amsterdam]), appOpener: FakeExternalAppOpener())
 
-        let kyoto = Location(name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
+        let kyoto = Location(id: UUID().uuidString, name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
         await sut.performAction(.addLocation(kyoto))
 
         guard case .loaded(let rows) = sut.props.loadState else {

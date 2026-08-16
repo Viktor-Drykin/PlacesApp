@@ -30,7 +30,7 @@ final class PlacesListViewModel {
         fetchLocationsUseCase: FetchLocationsUseCase,
         addLocationUseCase: AddLocationUseCase,
         wikipediaOpener: WikipediaOpener,
-        localization: PlacesListLocalizationProvider = PlacesListLocalizationProvider()
+        localization: PlacesListLocalizationProvider
     ) {
         self.fetchLocationsUseCase = fetchLocationsUseCase
         self.addLocationUseCase = addLocationUseCase
@@ -48,7 +48,8 @@ final class PlacesListViewModel {
             emptyStateTitle: localization.emptyStateTitle,
             emptyStateMessage: localization.emptyStateMessage,
             wikipediaAppMissingAlertTitle: localization.wikipediaAppMissingAlertTitle,
-            alertOKButtonTitle: localization.alertOKButtonTitle
+            alertOKButtonTitle: localization.alertOKButtonTitle,
+            isWikipediaAppMissingAlertPresented: false
         )
     }
 

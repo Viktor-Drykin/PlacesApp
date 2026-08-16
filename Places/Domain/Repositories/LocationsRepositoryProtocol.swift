@@ -1,5 +1,5 @@
 //
-//  LocationsRepository.swift
+//  LocationsRepositoryProtocol.swift
 //  Places
 //
 
@@ -8,7 +8,7 @@
 /// list of locations — `fetchLocations()` refreshes it from the source,
 /// `addLocation(_:)` appends to it — so callers always see one consistent,
 /// shared list.
-protocol LocationsRepository: Sendable {
+protocol LocationsRepositoryProtocol: Sendable {
     func fetchLocations() async throws -> [Location]
 
     /// Appends `location` to the stored list and returns the updated list.

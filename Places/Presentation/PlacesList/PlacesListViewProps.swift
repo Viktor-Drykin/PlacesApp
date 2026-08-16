@@ -22,17 +22,17 @@ struct PlacesListViewProps: Equatable {
         case loaded([PlaceRowProps])
     }
 
-    var title: String = ""
-    var subtitle: String = ""
-    var loadState: LoadState = .loading
-    var addLocationAccessibilityLabel: String = ""
-    var loadingAccessibilityLabel: String = ""
-    var placeRowAccessibilityHint: String = ""
-    var errorStateTitle: String = ""
-    var retryButtonTitle: String = ""
-    var emptyStateTitle: String = ""
-    var emptyStateMessage: String = ""
-    var wikipediaAppMissingAlertTitle: String = ""
-    var alertOKButtonTitle: String = ""
-    var isWikipediaAppMissingAlertPresented: Bool = false
+    var title: String
+    var subtitle: String
+    var loadState: LoadState
+    var addLocationAccessibilityLabel: String
+    var loadingAccessibilityLabel: String
+    var placeRowAccessibilityHint: String
+    var errorStateTitle: String
+    var retryButtonTitle: String
+    var emptyStateTitle: String
+    var emptyStateMessage: String
+    var wikipediaAppMissingAlertTitle: String
+    var alertOKButtonTitle: String
+    var isWikipediaAppMissingAlertPresented: Bool
 }

@@ -70,7 +70,7 @@ struct PlacesListView: View {
         switch viewModel.props.loadState {
         case .loading:
             ScrollView {
-                LoadingSkeletonList(accessibilityLabel: viewModel.props.loadingAccessibilityLabel)
+                LoadingSkeletonList(accessibilityLabel: viewModel.props.loadingAccessibilityLabel, rowCount: 5)
                     .padding(.horizontal, 20)
             }
 

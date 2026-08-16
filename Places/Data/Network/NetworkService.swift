@@ -18,7 +18,7 @@ protocol NetworkServiceProtocol: Sendable {
 struct NetworkService: NetworkServiceProtocol {
     let urlSession: URLSession
 
-    init(urlSession: URLSession = .shared) {
+    init(urlSession: URLSession) {
         self.urlSession = urlSession
     }
 

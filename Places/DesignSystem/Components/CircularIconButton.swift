@@ -13,7 +13,7 @@ struct CircularIconButton: View {
     let diameter: CGFloat
     let action: () -> Void
 
-    init(systemImage: String, accessibilityLabel: String, diameter: CGFloat = 32, action: @escaping () -> Void) {
+    init(systemImage: String, accessibilityLabel: String, diameter: CGFloat, action: @escaping () -> Void) {
         self.systemImage = systemImage
         self.accessibilityLabel = accessibilityLabel
         self.diameter = diameter

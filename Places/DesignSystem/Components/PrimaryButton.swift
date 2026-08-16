@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Accent-outlined button matching the mockup's `.btn-primary` style.
 struct PrimaryButtonStyle: ButtonStyle {
-    var isBlock: Bool = false
+    var isBlock: Bool
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -29,6 +29,6 @@ struct PrimaryButtonStyle: ButtonStyle {
 }
 
 extension ButtonStyle where Self == PrimaryButtonStyle {
-    static var dsPrimary: PrimaryButtonStyle { PrimaryButtonStyle() }
+    static var dsPrimary: PrimaryButtonStyle { PrimaryButtonStyle(isBlock: false) }
     static var dsPrimaryBlock: PrimaryButtonStyle { PrimaryButtonStyle(isBlock: true) }
 }

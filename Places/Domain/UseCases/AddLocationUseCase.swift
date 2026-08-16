@@ -10,7 +10,7 @@ protocol AddLocationUseCase: Sendable {
 }
 
 struct DefaultAddLocationUseCase: AddLocationUseCase {
-    let repository: LocationsRepository
+    let repository: LocationsRepositoryProtocol
 
     func execute(_ location: Location) async -> [Location] {
         await repository.addLocation(location)

@@ -10,7 +10,7 @@ struct DSTextField: View {
     let label: String
     let placeholder: String
     @Binding var text: String
-    var keyboardType: UIKeyboardType = .default
+    var keyboardType: UIKeyboardType
 
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {

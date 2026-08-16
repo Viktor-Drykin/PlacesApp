@@ -26,7 +26,7 @@ struct AddLocationView: View {
 
                 Spacer()
 
-                CircularIconButton(systemImage: "xmark", accessibilityLabel: viewModel.props.closeAccessibilityLabel) {
+                CircularIconButton(systemImage: "xmark", accessibilityLabel: viewModel.props.closeAccessibilityLabel, diameter: 32) {
                     isPresented = false
                 }
             }
@@ -37,7 +37,7 @@ struct AddLocationView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
-                    DSTextField(label: viewModel.props.nameFieldLabel, placeholder: viewModel.props.nameFieldPlaceholder, text: $viewModel.props.name)
+                    DSTextField(label: viewModel.props.nameFieldLabel, placeholder: viewModel.props.nameFieldPlaceholder, text: $viewModel.props.name, keyboardType: .default)
                         .focused($focusedField, equals: .name)
 
                     HStack(spacing: 12) {
@@ -68,5 +68,5 @@ struct AddLocationView: View {
 }
 
 #Preview {
-    AddLocationView(viewModel: AddLocationViewModel(), isPresented: .constant(true))
+    AddLocationView(viewModel: AddLocationViewModel(localization: AddLocationLocalizationProvider()), isPresented: .constant(true))
 }

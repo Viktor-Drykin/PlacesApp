@@ -8,7 +8,7 @@ protocol FetchLocationsUseCase: Sendable {
 }
 
 struct DefaultFetchLocationsUseCase: FetchLocationsUseCase {
-    let repository: LocationsRepository
+    let repository: LocationsRepositoryProtocol
 
     func execute() async throws -> [Location] {
         try await repository.fetchLocations()

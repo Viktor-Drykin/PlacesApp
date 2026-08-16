@@ -21,7 +21,7 @@ final class AddLocationViewModel {
 
     private let localization: AddLocationLocalizationProvider
 
-    init(localization: AddLocationLocalizationProvider = AddLocationLocalizationProvider()) {
+    init(localization: AddLocationLocalizationProvider) {
         self.localization = localization
         self.props = AddLocationViewProps(
             sheetTitle: localization.sheetTitle,
@@ -32,7 +32,13 @@ final class AddLocationViewModel {
             latitudeFieldPlaceholder: localization.latitudeFieldPlaceholder,
             longitudeFieldLabel: localization.longitudeFieldLabel,
             longitudeFieldPlaceholder: localization.longitudeFieldPlaceholder,
-            submitButtonTitle: localization.submitButtonTitle
+            submitButtonTitle: localization.submitButtonTitle,
+            name: "",
+            latitudeText: "",
+            longitudeText: "",
+            validationErrorMessage: nil,
+            validationErrorAccessibilityLabel: nil,
+            createdLocation: nil
         )
     }
 
@@ -75,7 +81,7 @@ final class AddLocationViewModel {
 
         let coordinate = Coordinate(latitude: latitude, longitude: longitude)
         let trimmedName = props.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        props.createdLocation = Location(name: trimmedName.isEmpty ? nil : trimmedName, coordinate: coordinate)
+        props.createdLocation = Location(id: UUID().uuidString, name: trimmedName.isEmpty ? nil : trimmedName, coordinate: coordinate)
     }
 
     private func setValidationError(_ message: String) {

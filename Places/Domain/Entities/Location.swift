@@ -12,7 +12,7 @@ struct Location: Identifiable, Equatable, Hashable, Sendable {
     let name: String?
     let coordinate: Coordinate
 
-    init(id: String = UUID().uuidString, name: String?, coordinate: Coordinate) {
+    init(id: String, name: String?, coordinate: Coordinate) {
         self.id = id
         self.name = name
         self.coordinate = coordinate

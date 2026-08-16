@@ -10,14 +10,14 @@ protocol LocationsServiceProtocol: Sendable {
 }
 
 /// Fetches and decodes the remote locations payload. Stateless — owning the
-/// resulting list is `LocationRepositoryImpl`'s job, not this service's.
+/// resulting list is `LocationRepository`'s job, not this service's.
 struct LocationsService: LocationsServiceProtocol {
     private static let endpointString = "https://raw.githubusercontent.com/abnamrocoesd/assignment-ios/main/locations.json"
 
     let networkService: NetworkServiceProtocol
     let decoder: JSONDecoder
 
-    init(networkService: NetworkServiceProtocol, decoder: JSONDecoder = JSONDecoder()) {
+    init(networkService: NetworkServiceProtocol, decoder: JSONDecoder) {
         self.networkService = networkService
         self.decoder = decoder
     }

@@ -12,8 +12,8 @@ final class PlacesListViewModel {
     enum Action: Sendable {
         case onAppear
         case retry
-        case selectLocation(Location)
-        case addLocation(Location)
+        case selectLocation(PlacesListViewProps.Location)
+        case addLocation(name: String?, latitude: Double, longitude: Double)
     }
 
     /// Not `private(set)`: the Wikipedia-missing alert binds
@@ -60,8 +60,8 @@ final class PlacesListViewModel {
             await load()
         case .selectLocation(let location):
             await selectLocation(location)
-        case .addLocation(let location):
-            await addLocation(location)
+        case .addLocation(let name, let latitude, let longitude):
+            await addLocation(name: name, latitude: latitude, longitude: longitude)
         }
     }
 
@@ -78,14 +78,17 @@ final class PlacesListViewModel {
         }
     }
 
-    private func selectLocation(_ location: Location) async {
-        let opened = await wikipediaOpener.open(location.coordinate)
+    private func selectLocation(_ location: PlacesListViewProps.Location) async {
+        let coordinate = Coordinate(latitude: location.latitude, longitude: location.longitude)
+        let opened = await wikipediaOpener.open(coordinate)
         if !opened {
             props.isWikipediaAppMissingAlertPresented = true
         }
     }
 
-    private func addLocation(_ location: Location) async {
+    private func addLocation(name: String?, latitude: Double, longitude: Double) async {
+        let coordinate = Coordinate(latitude: latitude, longitude: longitude)
+        let location = Location(id: UUID().uuidString, name: name, coordinate: coordinate)
         let locations = await addLocationUseCase.execute(location)
         applyLocations(locations)
     }
@@ -99,8 +102,12 @@ final class PlacesListViewModel {
 
         let rows = locations.map { location in
             PlacesListViewProps.PlaceRowProps(
-                id: location.id,
-                location: location,
+                location: PlacesListViewProps.Location(
+                    id: location.id,
+                    name: location.name,
+                    latitude: location.coordinate.latitude,
+                    longitude: location.coordinate.longitude
+                ),
                 displayName: location.name ?? localization.formattedCoordinate(location.coordinate),
                 coordinatesText: localization.formattedCoordinate(location.coordinate)
             )

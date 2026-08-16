@@ -38,7 +38,7 @@ final class AddLocationViewModel {
             longitudeText: "",
             validationErrorMessage: nil,
             validationErrorAccessibilityLabel: nil,
-            createdLocation: nil
+            submittedEntry: nil
         )
     }
 
@@ -60,7 +60,7 @@ final class AddLocationViewModel {
         props.longitudeText = ""
         props.validationErrorMessage = nil
         props.validationErrorAccessibilityLabel = nil
-        props.createdLocation = nil
+        props.submittedEntry = nil
     }
 
     private func submit() {
@@ -79,9 +79,12 @@ final class AddLocationViewModel {
             return
         }
 
-        let coordinate = Coordinate(latitude: latitude, longitude: longitude)
         let trimmedName = props.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        props.createdLocation = Location(id: UUID().uuidString, name: trimmedName.isEmpty ? nil : trimmedName, coordinate: coordinate)
+        props.submittedEntry = AddLocationViewProps.SubmittedLocation(
+            name: trimmedName.isEmpty ? nil : trimmedName,
+            latitude: latitude,
+            longitude: longitude
+        )
     }
 
     private func setValidationError(_ message: String) {

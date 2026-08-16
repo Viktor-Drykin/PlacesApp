@@ -12,6 +12,16 @@
 /// optional fields don't silently default to `nil` — every caller passes
 /// every value explicitly.
 struct AddLocationViewProps: Equatable {
+    /// This screen's own location model — not shared with `PlacesList`. No
+    /// `id`: this is just validated form output, not yet an identified
+    /// entry — minting an id for it is `PlacesListViewModel`'s job once it
+    /// actually adds the location to the list.
+    struct SubmittedLocation: Equatable {
+        let name: String?
+        let latitude: Double
+        let longitude: Double
+    }
+
     var sheetTitle: String
     var closeAccessibilityLabel: String
     var nameFieldLabel: String
@@ -27,7 +37,7 @@ struct AddLocationViewProps: Equatable {
     var longitudeText: String
     var validationErrorMessage: String?
     var validationErrorAccessibilityLabel: String?
-    var createdLocation: Location?
+    var submittedEntry: SubmittedLocation?
 
     init(
         sheetTitle: String,
@@ -44,7 +54,7 @@ struct AddLocationViewProps: Equatable {
         longitudeText: String,
         validationErrorMessage: String?,
         validationErrorAccessibilityLabel: String?,
-        createdLocation: Location?
+        submittedEntry: SubmittedLocation?
     ) {
         self.sheetTitle = sheetTitle
         self.closeAccessibilityLabel = closeAccessibilityLabel
@@ -60,6 +70,6 @@ struct AddLocationViewProps: Equatable {
         self.longitudeText = longitudeText
         self.validationErrorMessage = validationErrorMessage
         self.validationErrorAccessibilityLabel = validationErrorAccessibilityLabel
-        self.createdLocation = createdLocation
+        self.submittedEntry = submittedEntry
     }
 }

@@ -40,9 +40,9 @@ struct PlacesListView: View {
         .sheet(isPresented: $isAddSheetPresented) {
             AddLocationView(viewModel: addLocationViewModel, isPresented: $isAddSheetPresented)
         }
-        .onChange(of: addLocationViewModel.props.createdLocation) { _, newLocation in
-            guard let newLocation else { return }
-            Task { await viewModel.performAction(.addLocation(newLocation)) }
+        .onChange(of: addLocationViewModel.props.submittedEntry) { _, entry in
+            guard let entry else { return }
+            Task { await viewModel.performAction(.addLocation(name: entry.name, latitude: entry.latitude, longitude: entry.longitude)) }
             isAddSheetPresented = false
         }
     }

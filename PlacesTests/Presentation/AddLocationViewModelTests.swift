@@ -18,7 +18,7 @@ struct AddLocationViewModelTests {
         sut.performAction(.submit)
 
         #expect(sut.props.validationErrorMessage == localization.message(for: .invalidLatitude))
-        #expect(sut.props.createdLocation == nil)
+        #expect(sut.props.submittedEntry == nil)
     }
 
     @Test func invalidLongitudeSetsValidationError() {
@@ -29,7 +29,7 @@ struct AddLocationViewModelTests {
         sut.performAction(.submit)
 
         #expect(sut.props.validationErrorMessage == localization.message(for: .invalidLongitude))
-        #expect(sut.props.createdLocation == nil)
+        #expect(sut.props.submittedEntry == nil)
     }
 
     @Test func validSubmissionCreatesLocationWithGivenName() {
@@ -41,8 +41,9 @@ struct AddLocationViewModelTests {
         sut.performAction(.submit)
 
         #expect(sut.props.validationErrorMessage == nil)
-        #expect(sut.props.createdLocation?.name == "Kyoto Station")
-        #expect(sut.props.createdLocation?.coordinate == Coordinate(latitude: 34.9859, longitude: 135.7585))
+        #expect(sut.props.submittedEntry?.name == "Kyoto Station")
+        #expect(sut.props.submittedEntry?.latitude == 34.9859)
+        #expect(sut.props.submittedEntry?.longitude == 135.7585)
     }
 
     @Test func blankNameProducesNilName() {
@@ -52,7 +53,7 @@ struct AddLocationViewModelTests {
 
         sut.performAction(.submit)
 
-        #expect(sut.props.createdLocation?.name == nil)
+        #expect(sut.props.submittedEntry?.name == nil)
     }
 
     @Test func resetClearsFieldsAndErrors() {
@@ -69,6 +70,6 @@ struct AddLocationViewModelTests {
         #expect(sut.props.latitudeText.isEmpty)
         #expect(sut.props.longitudeText.isEmpty)
         #expect(sut.props.validationErrorMessage == nil)
-        #expect(sut.props.createdLocation == nil)
+        #expect(sut.props.submittedEntry == nil)
     }
 }

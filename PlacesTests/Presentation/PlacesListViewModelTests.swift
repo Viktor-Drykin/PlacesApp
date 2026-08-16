@@ -52,9 +52,16 @@ private final class FakeExternalAppOpener: ExternalAppOpener, @unchecked Sendabl
     }
 }
 
+private extension Location {
+    var asPlacesListLocation: PlacesListViewProps.Location {
+        PlacesListViewProps.Location(id: id, name: name, latitude: coordinate.latitude, longitude: coordinate.longitude)
+    }
+}
+
 @MainActor
 struct PlacesListViewModelTests {
     private let amsterdam = Location(id: UUID().uuidString, name: "Amsterdam", coordinate: Coordinate(latitude: 52.3547498, longitude: 4.8339215))
+    private let kyoto = Location(id: UUID().uuidString, name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
 
     private func makeSUT(
         fetchBehavior: FakeLocationsRepository.FetchBehavior,
@@ -78,7 +85,7 @@ struct PlacesListViewModelTests {
             Issue.record("Expected .loaded, got \(sut.props.loadState)")
             return
         }
-        #expect(rows.map(\.location) == [amsterdam])
+        #expect(rows.map(\.id) == [amsterdam.id])
         #expect(rows.first?.displayName == "Amsterdam")
     }
 
@@ -102,7 +109,7 @@ struct PlacesListViewModelTests {
         let opener = FakeExternalAppOpener()
         let sut = makeSUT(fetchBehavior: .success([amsterdam]), appOpener: opener)
 
-        await sut.performAction(.selectLocation(amsterdam))
+        await sut.performAction(.selectLocation(amsterdam.asPlacesListLocation))
 
         #expect(opener.openedURLs.count == 1)
         #expect(opener.openedURLs.first?.scheme == "wikipedia")
@@ -114,7 +121,7 @@ struct PlacesListViewModelTests {
         opener.canOpenResult = false
         let sut = makeSUT(fetchBehavior: .success([amsterdam]), appOpener: opener)
 
-        await sut.performAction(.selectLocation(amsterdam))
+        await sut.performAction(.selectLocation(amsterdam.asPlacesListLocation))
 
         #expect(opener.openedURLs.isEmpty)
         #expect(sut.props.isWikipediaAppMissingAlertPresented == true)
@@ -124,14 +131,13 @@ struct PlacesListViewModelTests {
         let sut = makeSUT(fetchBehavior: .success([amsterdam]), appOpener: FakeExternalAppOpener())
         await sut.performAction(.onAppear)
 
-        let kyoto = Location(id: UUID().uuidString, name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
-        await sut.performAction(.addLocation(kyoto))
+        await sut.performAction(.addLocation(name: kyoto.name, latitude: kyoto.coordinate.latitude, longitude: kyoto.coordinate.longitude))
 
         guard case .loaded(let rows) = sut.props.loadState else {
             Issue.record("Expected .loaded, got \(sut.props.loadState)")
             return
         }
-        #expect(rows.map(\.location) == [amsterdam, kyoto])
+        #expect(rows.map(\.displayName) == ["Amsterdam", "Kyoto Station"])
     }
 
     @Test func addLocationReplacesEmptyState() async {
@@ -139,26 +145,24 @@ struct PlacesListViewModelTests {
         await sut.performAction(.onAppear)
         #expect(sut.props.loadState == .empty)
 
-        let kyoto = Location(id: UUID().uuidString, name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
-        await sut.performAction(.addLocation(kyoto))
+        await sut.performAction(.addLocation(name: kyoto.name, latitude: kyoto.coordinate.latitude, longitude: kyoto.coordinate.longitude))
 
         guard case .loaded(let rows) = sut.props.loadState else {
             Issue.record("Expected .loaded, got \(sut.props.loadState)")
             return
         }
-        #expect(rows.map(\.location) == [kyoto])
+        #expect(rows.map(\.displayName) == ["Kyoto Station"])
     }
 
     @Test func addLocationBeforeAnyFetchStillAccumulates() async {
         let sut = makeSUT(fetchBehavior: .success([amsterdam]), appOpener: FakeExternalAppOpener())
 
-        let kyoto = Location(id: UUID().uuidString, name: "Kyoto Station", coordinate: Coordinate(latitude: 34.9859, longitude: 135.7585))
-        await sut.performAction(.addLocation(kyoto))
+        await sut.performAction(.addLocation(name: kyoto.name, latitude: kyoto.coordinate.latitude, longitude: kyoto.coordinate.longitude))
 
         guard case .loaded(let rows) = sut.props.loadState else {
             Issue.record("Expected .loaded, got \(sut.props.loadState)")
             return
         }
-        #expect(rows.map(\.location) == [kyoto])
+        #expect(rows.map(\.displayName) == ["Kyoto Station"])
     }
 }

@@ -24,6 +24,10 @@ struct PlacesListView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
                 CircularIconButton(systemImage: "plus", accessibilityLabel: viewModel.props.addLocationAccessibilityLabel, diameter: 52) {
+                    addLocationViewModel.onSubmit = { entry in
+                        Task { await viewModel.performAction(.addLocation(name: entry.name, latitude: entry.latitude, longitude: entry.longitude)) }
+                        isAddSheetPresented = false
+                    }
                     addLocationViewModel.performAction(.reset)
                     isAddSheetPresented = true
                 }
@@ -41,11 +45,6 @@ struct PlacesListView: View {
         }
         .sheet(isPresented: $isAddSheetPresented) {
             AddLocationView(viewModel: addLocationViewModel, isPresented: $isAddSheetPresented)
-        }
-        .onChange(of: addLocationViewModel.props.submittedEntry) { _, entry in
-            guard let entry else { return }
-            Task { await viewModel.performAction(.addLocation(name: entry.name, latitude: entry.latitude, longitude: entry.longitude)) }
-            isAddSheetPresented = false
         }
     }
 

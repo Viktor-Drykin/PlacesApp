@@ -9,6 +9,12 @@ import Observation
 @Observable
 @MainActor
 final class AddLocationViewModel {
+    struct SubmittedLocation: Equatable, Sendable {
+        let name: String?
+        let latitude: Double
+        let longitude: Double
+    }
+
     enum Action: Sendable {
         case reset
         case submit
@@ -18,6 +24,8 @@ final class AddLocationViewModel {
     /// `$viewModel.props.name` etc. — continuous input isn't routed through
     /// `performAction`, only discrete commands are.
     var props: AddLocationViewProps
+
+    var onSubmit: (SubmittedLocation) -> Void = { _ in }
 
     private let localization: AddLocationLocalizationProvider
 
@@ -38,8 +46,7 @@ final class AddLocationViewModel {
             longitudeText: "",
             validationErrorMessage: nil,
             validationErrorAccessibilityLabel: nil,
-            invalidField: nil,
-            submittedEntry: nil
+            invalidField: nil
         )
     }
 
@@ -62,7 +69,6 @@ final class AddLocationViewModel {
         props.validationErrorMessage = nil
         props.validationErrorAccessibilityLabel = nil
         props.invalidField = nil
-        props.submittedEntry = nil
     }
 
     private func submit() {
@@ -83,11 +89,11 @@ final class AddLocationViewModel {
         }
 
         let trimmedName = props.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        props.submittedEntry = AddLocationViewProps.SubmittedLocation(
+        onSubmit(SubmittedLocation(
             name: trimmedName.isEmpty ? nil : trimmedName,
             latitude: latitude,
             longitude: longitude
-        )
+        ))
     }
 
     private func setValidationError(_ message: String, field: AddLocationViewProps.Field) {

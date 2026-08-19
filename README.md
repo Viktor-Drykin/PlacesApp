@@ -23,19 +23,19 @@ The codebase follows Clean Architecture, split into independent layers under `Pl
 
 - **Domain** — pure Swift, no dependency on networking or UI frameworks.
   - `Entities`: `Location` (name is optional — not every source location has one), `Coordinate` (raw lat/lon only; formatting it for display is a presentation concern).
-  - `Repositories`: `LocationsRepository` protocol — the seam the rest of the app depends on. It owns the current list of locations: `fetchLocations()` refreshes it, `addLocation(_:)` appends to it, so callers always see one consistent list.
+  - `Repositories`: `LocationsRepositoryProtocol` — the seam the rest of the app depends on. It owns the current list of locations: `fetchLocations()` refreshes it, `addLocation(_:)` appends to it, so callers always see one consistent list.
   - `UseCases`: `FetchLocationsUseCase`, `AddLocationUseCase`, `ValidateCoordinateUseCase` (pure, synchronous coordinate validation).
   - `Services`: `WikipediaLinkBuilder` (builds `wikipedia://places?lat=&lon=` URLs), `ExternalAppOpener` (abstraction over `UIApplication`, so opening external URLs is mockable), `WikipediaOpener` (the shared "open this coordinate" flow used by every screen that needs it).
 - **Data** — implements the domain protocols, in three tiers.
   - `DTOs`: `LocationsResponseDTO`/`LocationDTO` (Codable, matching the `{ "locations": [{ "name"?, "lat", "long" }] }` shape) and a mapping extension to the domain `Location` — a missing/blank name maps to `nil`.
   - `NetworkService`: a thin, domain-agnostic `URLSession` wrapper.
   - `LocationsService`: fetches and decodes the remote locations payload via `NetworkService`, owning the endpoint URL.
-  - `LocationRepositoryImpl`: an `actor` implementing `LocationsRepository`. Uses `LocationsService` to fetch and keeps the result in memory, so locations added by the user live alongside the fetched ones in one concurrency-safe list.
+  - `LocationRepository`: an `actor` implementing `LocationsRepositoryProtocol`. Uses `LocationsService` to fetch and keeps the result in memory, so locations added by the user live alongside the fetched ones in one concurrency-safe list.
 - **Presentation** — one feature folder per screen (`PlacesList`, `AddLocation`), each with the same shape:
   - A `LocalizationProvider` owning every user-facing string for that screen (including how domain errors are worded), consumed only by the view model — views never reference it directly.
   - A `ViewProps` value type: the single entity the view renders from, instead of many individual observable properties.
   - A `ViewModel`, `@Observable`, with one `performAction(_:)` entry point the view calls instead of individual methods. Text field edits are plain two-way bindings into `props`, since they're continuous input rather than discrete commands. Built on Swift Concurrency (`async`/`await`) throughout.
-  - `AppDependencies` is the composition root: wires `NetworkService` → `LocationsService` → `LocationRepositoryImpl` and both use cases behind it (same repository instance, so fetched and added locations share state), plus `WikipediaOpener`. No DI framework — the object graph is small enough to wire by hand.
+  - `AppDependencies` is the composition root: wires `NetworkService` → `LocationsService` → `LocationRepository` and both use cases behind it (same repository instance, so fetched and added locations share state), plus `WikipediaOpener`. No DI framework — the object graph is small enough to wire by hand.
 - **DesignSystem** — a small reusable component library and token set (`DSColor`, `DSSpacing`) modeled on the Claude Design mockup handed off for this project. Only genuinely screen-agnostic components live here (`PrimaryButton`, `DSTextField`, `ErrorStateView`, `EmptyStateView`, `LoadingSkeletonList`, `CircularIconButton`); anything that knows about a domain type, like the location row, lives with its feature instead (`Presentation/PlacesList/PlaceRow.swift`).
 
 ### Design fidelity notes
@@ -60,7 +60,8 @@ Unit tests use the [Swift Testing](https://developer.apple.com/documentation/tes
 
 - Coordinate formatting (N/S/E/W sign handling, zero) and coordinate validation (range boundaries, non-numeric input).
 - DTO → domain mapping, including the missing-name-becomes-`nil` case.
-- `LocationsService` against a fake network service (success, network failure, malformed JSON) and `LocationRepositoryImpl` (fetch stores/returns the list, add appends and returns the growing list, including adding before any fetch).
+- `NetworkService` against a stubbed `URLProtocol` (2xx success including the upper status-code boundary, 4xx/5xx failures, transport-level errors).
+- `LocationsService` against a fake network service (success, network/transport failure → `.server`, malformed JSON → `.decoding`) and `LocationRepository` (fetch stores/returns the list, add appends and returns the growing list, including adding before any fetch).
 - View model behavior for both screens via their single `performAction(_:)` entry point — state transitions (`loading`/`loaded`/`empty`/`error`), the Wikipedia-opening flow (URL correctness and the "app not installed" path), and form validation — using fake `ExternalAppOpener`/`LocationsRepository` implementations so nothing touches a real `UIApplication` or network call.
 
 Run tests via Xcode's Test navigator or:

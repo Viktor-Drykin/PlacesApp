@@ -36,9 +36,9 @@ struct LocationRepositoryTests {
     }
 
     @Test func fetchLocationsPropagatesFailure() async {
-        let repository = LocationRepository(locationsService: FakeLocationsService(behavior: .failure(LocationsError.network)))
+        let repository = LocationRepository(locationsService: FakeLocationsService(behavior: .failure(LocationsError.server)))
 
-        await #expect(throws: LocationsError.network) {
+        await #expect(throws: LocationsError.server) {
             _ = try await repository.fetchLocations()
         }
     }

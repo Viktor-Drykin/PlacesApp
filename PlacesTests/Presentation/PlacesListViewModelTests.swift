@@ -96,7 +96,7 @@ struct PlacesListViewModelTests {
     }
 
     @Test func onAppearTransitionsToErrorOnFailure() async {
-        let sut = makeSUT(fetchBehavior: .failure(LocationsError.network), appOpener: FakeExternalAppOpener())
+        let sut = makeSUT(fetchBehavior: .failure(LocationsError.server), appOpener: FakeExternalAppOpener())
         await sut.performAction(.onAppear)
 
         guard case .error = sut.props.loadState else {

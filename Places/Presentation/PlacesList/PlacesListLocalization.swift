@@ -75,11 +75,11 @@ struct PlacesListLocalizationProvider {
 
     func message(for error: LocationsError) -> String {
         switch error {
-        case .network:
-            return String(localized: "places_list.error.network", defaultValue: "Check your connection and try again.")
+        case .server:
+            return String(localized: "places_list.error.server", defaultValue: "Something went wrong loading locations. Try again.")
         case .decoding:
             return String(localized: "places_list.error.decoding", defaultValue: "The locations data couldn't be read.")
-        case .invalidEndpoint, .unknown:
+        case .invalidEndpoint:
             return unknownErrorMessage
         }
     }

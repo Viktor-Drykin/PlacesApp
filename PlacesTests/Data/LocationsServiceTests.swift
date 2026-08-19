@@ -36,10 +36,10 @@ struct LocationsServiceTests {
         #expect(locations[0].name == "Amsterdam")
     }
 
-    @Test func propagatesNetworkErrors() async {
-        let service = LocationsService(networkService: FakeNetworkService(behavior: .failure(LocationsError.network)), decoder: JSONDecoder())
+    @Test func translatesNetworkFailuresToServerError() async {
+        let service = LocationsService(networkService: FakeNetworkService(behavior: .failure(NetworkServiceError.invalidResponse)), decoder: JSONDecoder())
 
-        await #expect(throws: LocationsError.network) {
+        await #expect(throws: LocationsError.server) {
             _ = try await service.fetchLocations()
         }
     }

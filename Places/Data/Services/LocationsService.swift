@@ -31,7 +31,7 @@ struct LocationsService: LocationsServiceProtocol {
         do {
             data = try await networkService.fetchData(from: endpoint)
         } catch {
-            throw LocationsError.network
+            throw LocationsError.server
         }
 
         do {

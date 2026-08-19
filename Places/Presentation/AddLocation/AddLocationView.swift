@@ -41,10 +41,22 @@ struct AddLocationView: View {
                         .focused($focusedField, equals: .name)
 
                     HStack(spacing: 12) {
-                        DSTextField(label: viewModel.props.latitudeFieldLabel, placeholder: viewModel.props.latitudeFieldPlaceholder, text: $viewModel.props.latitudeText, keyboardType: .numbersAndPunctuation)
-                            .focused($focusedField, equals: .latitude)
-                        DSTextField(label: viewModel.props.longitudeFieldLabel, placeholder: viewModel.props.longitudeFieldPlaceholder, text: $viewModel.props.longitudeText, keyboardType: .numbersAndPunctuation)
-                            .focused($focusedField, equals: .longitude)
+                        DSTextField(
+                            label: viewModel.props.latitudeFieldLabel,
+                            placeholder: viewModel.props.latitudeFieldPlaceholder,
+                            text: $viewModel.props.latitudeText,
+                            keyboardType: .numbersAndPunctuation,
+                            errorMessage: viewModel.props.invalidField == .latitude ? viewModel.props.validationErrorMessage : nil
+                        )
+                        .focused($focusedField, equals: .latitude)
+                        DSTextField(
+                            label: viewModel.props.longitudeFieldLabel,
+                            placeholder: viewModel.props.longitudeFieldPlaceholder,
+                            text: $viewModel.props.longitudeText,
+                            keyboardType: .numbersAndPunctuation,
+                            errorMessage: viewModel.props.invalidField == .longitude ? viewModel.props.validationErrorMessage : nil
+                        )
+                        .focused($focusedField, equals: .longitude)
                     }
 
                     if let validationError = viewModel.props.validationErrorMessage {
@@ -64,6 +76,15 @@ struct AddLocationView: View {
             }
         }
         .presentationDetents([.medium])
+        .onChange(of: viewModel.props.validationErrorMessage) { _, message in
+            guard let message else { return }
+            AccessibilityNotification.Announcement(message).post()
+            switch viewModel.props.invalidField {
+            case .latitude: focusedField = .latitude
+            case .longitude: focusedField = .longitude
+            case nil: break
+            }
+        }
     }
 }
 

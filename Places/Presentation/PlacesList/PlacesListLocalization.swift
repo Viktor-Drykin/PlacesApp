@@ -37,6 +37,10 @@ struct PlacesListLocalizationProvider {
         String(localized: "places_list.wikipedia_missing_alert.title", defaultValue: "Wikipedia app isn't installed")
     }
 
+    var wikipediaAppMissingAlertMessage: String {
+        String(localized: "places_list.wikipedia_missing_alert.message", defaultValue: "Install the Wikipedia app from the App Store to open locations there.")
+    }
+
     var alertOKButtonTitle: String {
         String(localized: "places_list.alert.ok_button", defaultValue: "OK")
     }

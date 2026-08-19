@@ -15,8 +15,8 @@ enum DSColor {
     /// Solid stand-ins for what used to be `text.opacity(...)` — precomputed
     /// blends of `text` over `background` so views never derive tints at
     /// the call site.
-    static let textSecondary = Color(hex: 0x7F7E7D)
-    static let textTertiary = Color(hex: 0xA9A8A7)
+    static let textSecondary = Color(hex: 0x6E6D6C)
+    static let textTertiary = Color(hex: 0x8C8B8A)
     static let divider = Color(hex: 0xD1D0D0)
 
     static let accent = Color(hex: 0xB68235)

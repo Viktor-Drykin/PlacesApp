@@ -20,6 +20,7 @@ struct EmptyStateView: View {
                 .fontDesign(.serif)
                 .fontWeight(.semibold)
                 .foregroundStyle(DSColor.text)
+                .accessibilityAddTraits(.isHeader)
 
             Text(message)
                 .font(.footnote)

@@ -27,6 +27,8 @@ struct PlacesListView: View {
         .task { await viewModel.performAction(.onAppear) }
         .alert(viewModel.props.wikipediaAppMissingAlertTitle, isPresented: $viewModel.props.isWikipediaAppMissingAlertPresented) {
             Button(viewModel.props.alertOKButtonTitle, role: .cancel) {}
+        } message: {
+            Text(viewModel.props.wikipediaAppMissingAlertMessage)
         }
     }
 
@@ -42,6 +44,7 @@ struct PlacesListView: View {
             Text(viewModel.props.subtitle)
                 .font(.footnote)
                 .foregroundStyle(DSColor.textSecondary)
+                .accessibilityHidden(viewModel.props.subtitle.trimmingCharacters(in: .whitespaces).isEmpty)
         }
         .padding(.horizontal, 20)
         .padding(.top, 2)

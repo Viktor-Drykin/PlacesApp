@@ -43,6 +43,7 @@ struct PlacesListViewProps: Equatable {
     var emptyStateTitle: String
     var emptyStateMessage: String
     var wikipediaAppMissingAlertTitle: String
+    var wikipediaAppMissingAlertMessage: String
     var alertOKButtonTitle: String
     var isWikipediaAppMissingAlertPresented: Bool
 }

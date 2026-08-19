@@ -38,6 +38,7 @@ final class AddLocationViewModel {
             longitudeText: "",
             validationErrorMessage: nil,
             validationErrorAccessibilityLabel: nil,
+            invalidField: nil,
             submittedEntry: nil
         )
     }
@@ -60,22 +61,24 @@ final class AddLocationViewModel {
         props.longitudeText = ""
         props.validationErrorMessage = nil
         props.validationErrorAccessibilityLabel = nil
+        props.invalidField = nil
         props.submittedEntry = nil
     }
 
     private func submit() {
         props.validationErrorMessage = nil
         props.validationErrorAccessibilityLabel = nil
+        props.invalidField = nil
 
         let latitudeResult = ValidateCoordinateUseCase.validateLatitude(props.latitudeText)
         guard case .success(let latitude) = latitudeResult else {
-            if case .failure(let error) = latitudeResult { setValidationError(localization.message(for: error)) }
+            if case .failure(let error) = latitudeResult { setValidationError(localization.message(for: error), field: .latitude) }
             return
         }
 
         let longitudeResult = ValidateCoordinateUseCase.validateLongitude(props.longitudeText)
         guard case .success(let longitude) = longitudeResult else {
-            if case .failure(let error) = longitudeResult { setValidationError(localization.message(for: error)) }
+            if case .failure(let error) = longitudeResult { setValidationError(localization.message(for: error), field: .longitude) }
             return
         }
 
@@ -87,8 +90,9 @@ final class AddLocationViewModel {
         )
     }
 
-    private func setValidationError(_ message: String) {
+    private func setValidationError(_ message: String, field: AddLocationViewProps.Field) {
         props.validationErrorMessage = message
         props.validationErrorAccessibilityLabel = localization.validationErrorAccessibilityLabel(for: message)
+        props.invalidField = field
     }
 }

@@ -48,6 +48,7 @@ final class PlacesListViewModel {
             emptyStateTitle: localization.emptyStateTitle,
             emptyStateMessage: localization.emptyStateMessage,
             wikipediaAppMissingAlertTitle: localization.wikipediaAppMissingAlertTitle,
+            wikipediaAppMissingAlertMessage: localization.wikipediaAppMissingAlertMessage,
             alertOKButtonTitle: localization.alertOKButtonTitle,
             isWikipediaAppMissingAlertPresented: false
         )

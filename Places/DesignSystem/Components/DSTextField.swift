@@ -11,6 +11,10 @@ struct DSTextField: View {
     let placeholder: String
     @Binding var text: String
     var keyboardType: UIKeyboardType
+    /// Set when this specific field failed validation. Drives both the
+    /// visual border and the VoiceOver value, so the error isn't only
+    /// discoverable via a caption elsewhere on screen.
+    var errorMessage: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -26,9 +30,10 @@ struct DSTextField: View {
                 .frame(minHeight: 36)
                 .background(
                     RoundedRectangle(cornerRadius: DSRadius.md)
-                        .strokeBorder(DSColor.divider, lineWidth: 1)
+                        .strokeBorder(errorMessage == nil ? DSColor.divider : DSColor.accent700, lineWidth: errorMessage == nil ? 1 : 2)
                 )
                 .accessibilityLabel(label)
+                .accessibilityValue(errorMessage ?? text)
         }
     }
 }

@@ -13,7 +13,7 @@ struct PrimaryButtonStyle: ButtonStyle {
         configuration.label
             .font(.headline)
             .fontDesign(.serif)
-            .foregroundStyle(DSColor.accent)
+            .foregroundStyle(DSColor.accent700)
             .padding(.vertical, DSSpacing.space2)
             .padding(.horizontal, DSSpacing.space4)
             .frame(maxWidth: isBlock ? .infinity : nil)

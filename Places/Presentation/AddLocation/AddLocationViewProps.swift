@@ -22,6 +22,13 @@ struct AddLocationViewProps: Equatable {
         let longitude: Double
     }
 
+    /// Which coordinate field a validation failure applies to, so the view
+    /// can move focus there and surface the error on that specific field
+    /// instead of only in a caption VoiceOver has no reason to visit.
+    enum Field: Equatable {
+        case latitude, longitude
+    }
+
     var sheetTitle: String
     var closeAccessibilityLabel: String
     var nameFieldLabel: String
@@ -37,6 +44,7 @@ struct AddLocationViewProps: Equatable {
     var longitudeText: String
     var validationErrorMessage: String?
     var validationErrorAccessibilityLabel: String?
+    var invalidField: Field?
     var submittedEntry: SubmittedLocation?
 
     init(
@@ -54,6 +62,7 @@ struct AddLocationViewProps: Equatable {
         longitudeText: String,
         validationErrorMessage: String?,
         validationErrorAccessibilityLabel: String?,
+        invalidField: Field?,
         submittedEntry: SubmittedLocation?
     ) {
         self.sheetTitle = sheetTitle
@@ -70,6 +79,7 @@ struct AddLocationViewProps: Equatable {
         self.longitudeText = longitudeText
         self.validationErrorMessage = validationErrorMessage
         self.validationErrorAccessibilityLabel = validationErrorAccessibilityLabel
+        self.invalidField = invalidField
         self.submittedEntry = submittedEntry
     }
 }

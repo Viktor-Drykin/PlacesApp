@@ -18,6 +18,7 @@ struct AddLocationViewModelTests {
         sut.performAction(.submit)
 
         #expect(sut.props.validationErrorMessage == localization.message(for: .invalidLatitude))
+        #expect(sut.props.invalidField == .latitude)
         #expect(sut.props.submittedEntry == nil)
     }
 
@@ -29,6 +30,7 @@ struct AddLocationViewModelTests {
         sut.performAction(.submit)
 
         #expect(sut.props.validationErrorMessage == localization.message(for: .invalidLongitude))
+        #expect(sut.props.invalidField == .longitude)
         #expect(sut.props.submittedEntry == nil)
     }
 

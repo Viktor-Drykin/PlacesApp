@@ -85,7 +85,7 @@ struct PlacesListViewModelTests {
             Issue.record("Expected .loaded, got \(sut.props.loadState)")
             return
         }
-        #expect(rows.map(\.location) == [amsterdam.asPlacesListLocation])
+        #expect(rows.map(\.id) == [amsterdam.id])
         #expect(rows.first?.displayName == "Amsterdam")
     }
 

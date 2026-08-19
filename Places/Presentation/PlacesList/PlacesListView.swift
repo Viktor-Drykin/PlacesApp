@@ -6,8 +6,14 @@
 import SwiftUI
 
 struct PlacesListView: View {
-    @Bindable var viewModel: PlacesListViewModel
-    var onAddTapped: () -> Void
+    @State private var viewModel: PlacesListViewModel
+    @State private var addLocationViewModel: AddLocationViewModel
+    @State private var isAddSheetPresented = false
+
+    init(dependencies: AppDependencies) {
+        _viewModel = State(initialValue: dependencies.makePlacesListViewModel())
+        _addLocationViewModel = State(initialValue: dependencies.makeAddLocationViewModel())
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -17,10 +23,13 @@ struct PlacesListView: View {
                 content
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
-                CircularIconButton(systemImage: "plus", accessibilityLabel: viewModel.props.addLocationAccessibilityLabel, diameter: 52, action: onAddTapped)
-                    .shadow(color: DSColor.shadowLarge, radius: DSShadow.lgRadius / 2, y: DSShadow.lgY / 2)
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 24)
+                CircularIconButton(systemImage: "plus", accessibilityLabel: viewModel.props.addLocationAccessibilityLabel, diameter: 52) {
+                    addLocationViewModel.performAction(.reset)
+                    isAddSheetPresented = true
+                }
+                .shadow(color: DSColor.shadowLarge, radius: DSShadow.lgRadius / 2, y: DSShadow.lgY / 2)
+                .padding(.trailing, 20)
+                .padding(.bottom, 24)
             }
         }
         .background(DSColor.background.ignoresSafeArea())
@@ -29,6 +38,14 @@ struct PlacesListView: View {
             Button(viewModel.props.alertOKButtonTitle, role: .cancel) {}
         } message: {
             Text(viewModel.props.wikipediaAppMissingAlertMessage)
+        }
+        .sheet(isPresented: $isAddSheetPresented) {
+            AddLocationView(viewModel: addLocationViewModel, isPresented: $isAddSheetPresented)
+        }
+        .onChange(of: addLocationViewModel.props.submittedEntry) { _, entry in
+            guard let entry else { return }
+            Task { await viewModel.performAction(.addLocation(name: entry.name, latitude: entry.latitude, longitude: entry.longitude)) }
+            isAddSheetPresented = false
         }
     }
 
@@ -91,5 +108,5 @@ struct PlacesListView: View {
 }
 
 #Preview {
-    PlacesListView(viewModel: AppDependencies().makePlacesListViewModel(), onAddTapped: {})
+    PlacesListView(dependencies: AppDependencies())
 }
